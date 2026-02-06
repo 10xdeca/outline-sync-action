@@ -29,7 +29,7 @@ jobs:
         with:
           fetch-depth: 0  # Required for git diff
 
-      - uses: xdeca/outline-sync@v1
+      - uses: 10xdeca/outline-sync-action@main
         with:
           outline_api_key: ${{ secrets.OUTLINE_API_KEY }}
           collection_id: ${{ secrets.OUTLINE_COLLECTION_ID }}
@@ -50,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: xdeca/outline-sync@v1
+      - uses: 10xdeca/outline-sync-action@main
         with:
           outline_api_key: ${{ secrets.OUTLINE_API_KEY }}
           collection_id: ${{ secrets.OUTLINE_COLLECTION_ID }}
@@ -61,7 +61,7 @@ jobs:
 ### Self-Hosted Outline
 
 ```yaml
-- uses: xdeca/outline-sync@v1
+- uses: 10xdeca/outline-sync-action@main
   with:
     outline_api_key: ${{ secrets.OUTLINE_API_KEY }}
     collection_id: ${{ secrets.OUTLINE_COLLECTION_ID }}
