@@ -29,6 +29,10 @@ inputs:
     description: 'Glob pattern for markdown files to sync'
     required: false
     default: '**/*.md'
+  exclude_pattern:
+    description: 'Glob pattern(s) to exclude from sync (comma-separated, e.g. "CLAUDE.md,**/CLAUDE.md")'
+    required: false
+    default: ''
 
 outputs:
   synced_count:
@@ -69,4 +73,5 @@ runs:
         FILE_PATTERN: ${{ inputs.file_pattern }}
         GITHUB_BASE_REF: ${{ github.base_ref }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
+        EXCLUDE_PATTERN: ${{ inputs.exclude_pattern }}
       run: node ${{ github.action_path }}/src/index.js

@@ -5,7 +5,7 @@ import { minimatch } from 'minimatch';
 /**
  * Get files that were added or modified compared to a base ref
  */
-export function getChangedFiles(baseRef, pattern) {
+export function getChangedFiles(baseRef, pattern, excludePatterns = []) {
   try {
     const output = execSync(
       `git diff --name-only --diff-filter=AM ${baseRef}...HEAD`,
@@ -13,7 +13,7 @@ export function getChangedFiles(baseRef, pattern) {
     );
 
     const files = output.trim().split('\n').filter(Boolean);
-    return filterByPattern(files, pattern);
+    return filterByPattern(files, pattern, excludePatterns);
   } catch (error) {
     console.error(`Error getting changed files: ${error.message}`);
     return [];
@@ -23,7 +23,7 @@ export function getChangedFiles(baseRef, pattern) {
 /**
  * Get files that were deleted compared to a base ref
  */
-export function getDeletedFiles(baseRef, pattern) {
+export function getDeletedFiles(baseRef, pattern, excludePatterns = []) {
   try {
     const output = execSync(
       `git diff --name-only --diff-filter=D ${baseRef}...HEAD`,
@@ -31,7 +31,7 @@ export function getDeletedFiles(baseRef, pattern) {
     );
 
     const files = output.trim().split('\n').filter(Boolean);
-    return filterByPattern(files, pattern);
+    return filterByPattern(files, pattern, excludePatterns);
   } catch (error) {
     console.error(`Error getting deleted files: ${error.message}`);
     return [];
@@ -41,10 +41,10 @@ export function getDeletedFiles(baseRef, pattern) {
 /**
  * Get all files matching a glob pattern
  */
-export async function getAllMatchingFiles(pattern) {
+export async function getAllMatchingFiles(pattern, excludePatterns = []) {
   const files = await glob(pattern, {
     nodir: true,
-    ignore: ['node_modules/**', '.git/**'],
+    ignore: ['node_modules/**', '.git/**', ...excludePatterns],
   });
   return files;
 }
@@ -52,6 +52,9 @@ export async function getAllMatchingFiles(pattern) {
 /**
  * Filter a list of files by a glob pattern
  */
-function filterByPattern(files, pattern) {
-  return files.filter(file => minimatch(file, pattern));
+function filterByPattern(files, pattern, excludePatterns = []) {
+  return files.filter(file =>
+    minimatch(file, pattern) &&
+    !excludePatterns.some(ep => minimatch(file, ep))
+  );
 }

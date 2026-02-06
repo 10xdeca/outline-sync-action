@@ -10,6 +10,7 @@ async function main() {
   const syncMode = process.env.SYNC_MODE || 'changed';
   const deleteRemoved = process.env.DELETE_REMOVED !== 'false';
   const filePattern = process.env.FILE_PATTERN || '**/*.md';
+  const excludePattern = process.env.EXCLUDE_PATTERN || '';
   const baseRef = process.env.GITHUB_BASE_REF;
   const eventName = process.env.GITHUB_EVENT_NAME;
 
@@ -31,19 +32,25 @@ async function main() {
   console.log(`Sync Mode: ${syncMode}`);
   console.log(`Delete Removed: ${deleteRemoved}`);
   console.log(`File Pattern: ${filePattern}`);
+  console.log(`Exclude Pattern: ${excludePattern || '(none)'}`);
   console.log('');
 
   let filesToSync = [];
   let filesToDelete = [];
 
+  // Parse exclude patterns
+  const excludePatterns = excludePattern
+    ? excludePattern.split(',').map(p => p.trim()).filter(Boolean)
+    : [];
+
   // Determine files to process based on sync mode
   if (syncMode === 'changed' && eventName === 'pull_request' && baseRef) {
     console.log(`Detecting changes against origin/${baseRef}...`);
-    filesToSync = getChangedFiles(`origin/${baseRef}`, filePattern);
-    filesToDelete = deleteRemoved ? getDeletedFiles(`origin/${baseRef}`, filePattern) : [];
+    filesToSync = getChangedFiles(`origin/${baseRef}`, filePattern, excludePatterns);
+    filesToDelete = deleteRemoved ? getDeletedFiles(`origin/${baseRef}`, filePattern, excludePatterns) : [];
   } else {
     console.log('Running full sync of all matching files...');
-    filesToSync = await getAllMatchingFiles(filePattern);
+    filesToSync = await getAllMatchingFiles(filePattern, excludePatterns);
     filesToDelete = []; // Full sync doesn't delete (no way to know what was removed)
   }
 

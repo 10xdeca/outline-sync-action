@@ -78,6 +78,7 @@ jobs:
 | `sync_mode` | No | `changed` | `changed` (only changed files on PR) or `full` (all files) |
 | `delete_removed` | No | `true` | Delete documents from Outline when source files are deleted |
 | `file_pattern` | No | `**/*.md` | Glob pattern for files to sync |
+| `exclude_pattern` | No | - | Comma-separated glob patterns to exclude (e.g. `CLAUDE.md,**/CLAUDE.md`) |
 
 ## Outputs
 
