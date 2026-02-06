@@ -1,0 +1,17 @@
+{
+  "name": "outline-sync",
+  "version": "1.0.0",
+  "description": "GitHub Action to sync markdown files to Outline knowledge base",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "glob": "^13.0.1",
+    "minimatch": "^10.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
